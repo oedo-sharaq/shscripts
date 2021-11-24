@@ -4,7 +4,10 @@ scripts for OEDO/SHARAQ
 ## ppac_prm
 A script for downloading BigRIPS ppac parameters and generating a yaml file for artemis
 
-To use:
+- requirements  
+python3, pyyaml
+
+- To use:  
 ```
 python3 download_xml.py
 ```
