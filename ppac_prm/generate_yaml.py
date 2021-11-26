@@ -22,6 +22,8 @@ class PPACXMLParser():
             yfactor = ppac.find('yfactor').text
             xoffset = ppac.find('xoffset').text
             yoffset = ppac.find('yoffset').text
+            xns_off = ppac.find('xns_off').text
+            yns_off = ppac.find('yns_off').text
             xpos_off = ppac.find('xpos_off').text
             ypos_off = ppac.find('ypos_off').text
             xzpos = ppac.find('xzpos').text
@@ -47,7 +49,7 @@ class PPACXMLParser():
             content = {}
             content['ns2mm'] = [float(xfactor), float(yfactor)]
             content['delayoffset'] = [float(xoffset), float(yoffset)]
-            content['linecalib'] = [0.0, 1.0]
+            content['linecalib'] = [float(xns_off), float(yns_off)]
             content['exchange'] = 0
             content['reflectx'] = 0
             content['geometry'] = [float(xpos_off), float(
