@@ -15,6 +15,7 @@ class PPACXMLParser():
 
     def parse(self):
         contents = {}
+        self.ch2ns = []
         for ppac in self.root:
             name = str(ppac.find('NAME').text).lower().replace('-', '')
             xfactor = ppac.find('xfactor').text
@@ -29,6 +30,19 @@ class PPACXMLParser():
             tysum_min = ppac.find('tysum_min').text
             txsum_max = ppac.find('txsum_max').text
             tysum_max = ppac.find('tysum_max').text
+            a_ch2ns = ppac.find('a_ch2ns').text
+            x1_ch2ns = ppac.find('x1_ch2ns').text
+            x2_ch2ns = ppac.find('x2_ch2ns').text
+            y1_ch2ns = ppac.find('y1_ch2ns').text
+            y2_ch2ns = ppac.find('y2_ch2ns').text
+	    
+            ch2ns_list = []
+            ch2ns_list.append([0.0, float(x1_ch2ns)])
+            ch2ns_list.append([0.0, float(x2_ch2ns)])
+            ch2ns_list.append([0.0, float(y1_ch2ns)])
+            ch2ns_list.append([0.0, float(y2_ch2ns)])
+            ch2ns_list.append([0.0, float(a_ch2ns)])
+            self.ch2ns.append({'name': name, 'list': ch2ns_list})
 
             content = {}
             content['ns2mm'] = [float(xfactor), float(yfactor)]
@@ -47,10 +61,15 @@ class PPACXMLParser():
         self.yaml_contents['Type'] = 'art::TPPACParameter'
         self.yaml_contents['Contents'] = contents
 
-    def write(self, yaml_name):
+    def write(self, yaml_name, ch2ns_name):
         with open(yaml_name, 'w') as file:
             yaml.dump(self.yaml_contents, file,
                       sort_keys=False)
+        with open(ch2ns_name, 'w') as file:
+            for fp in self.ch2ns:
+                file.write('# ' + fp['name']+' x1 x2 y1 y2 a\n')
+                for prm in fp['list']:
+                      file.write(str(prm[0]) + '\t' + str(prm[1]) + '\n')
 
 
 def generate_yaml(input_file_name):
@@ -63,5 +82,6 @@ def generate_yaml(input_file_name):
 
     parser.parse()
     yaml_name = input_file_name[0:-3]+'yaml'
-    parser.write(yaml_name)
+    ch2ns_name = input_file_name[0:-4] + '_ch2ns.dat'
+    parser.write(yaml_name, ch2ns_name)
     return yaml_name
